@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - AZsubay.dev | School Project Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>AZsubay<span>.dev</span></h1>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="index.html#projects" class="nav-link">Projects</a>
+                <a href="contacts.html" class="nav-link active">Contact</a>
+                <a href="#" class="nav-link" id="dashboardLink" style="display: none;">Dashboard</a>
+                <a href="#" class="nav-link" id="adminLink" style="display: none;">Admin</a>
+            </div>
+            <div class="nav-actions">
+                <div class="cart-icon" id="cartIcon" style="display: none;">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+                <div class="nav-auth" id="navAuth">
+                    <button class="btn btn-outline" id="loginBtn">Login</button>
+                    <button class="btn btn-primary" id="registerBtn">Register</button>
+                    <button class="btn btn-danger" id="logoutBtn" style="display: none;">Logout</button>
+                </div>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Contact Page Header -->
+        <section class="contact-header-section" style="margin-top: 80px; padding: 60px 0; background: linear-gradient(135deg, var(--background-card) 0%, var(--background-dark) 100%);">
+            <div class="container">
+                <div class="contact-header">
+                    <div class="header-content">
+                        <div class="header-text">
+                            <h2><i class="fas fa-envelope"></i> Get In Touch</h2>
+                            <p>We're here to help and answer any question you might have. We look forward to hearing from you!</p>
+                        </div>
+                        <div class="header-image">
+                            <img src="../pict/me6.png" alt="Contact Us" class="contact-header-image" style="max-width: 300px; border-radius: 15px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Advertisement Video Section -->
+        <section class="contact-ad-section">
+            <div class="container">
+                <div class="ad-video-container" style="position: relative; border-radius: 15px; overflow: hidden;">
+                    <video autoplay muted loop playsinline class="ad-video" style="width: 100%; border-radius: 15px;">
+                        <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="ad-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; background: rgba(0,0,0,0.7); padding: 30px; border-radius: 15px;">
+                        <h3>🚀 Transform Your Learning Journey</h3>
+                        <p>Discover premium educational projects and resources</p>
+                        <button class="btn btn-primary ad-cta" onclick="window.location.href='index.html#projects'">Explore Projects</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Services Section -->
+        <section class="contact-services-section" style="padding: 80px 0; background: var(--background-dark);">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Our Services</h2>
+                    <p>Comprehensive solutions for your educational needs</p>
+                </div>
+                <div class="contact-services">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-laptop-code"></i>
+                        </div>
+                        <h4>Project Development</h4>
+                        <p>Custom educational projects tailored to your needs</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h4>Educational Consulting</h4>
+                        <p>Expert guidance for your academic projects</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h4>Community Support</h4>
+                        <p>Join our thriving student developer community</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h4>Career Guidance</h4>
+                        <p>Launch your tech career with our mentorship</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Information and Form Section -->
+        <section class="contact-main-section" style="padding: 80px 0; background: var(--background-card);">
+            <div class="container">
+                <div class="contact-content">
+                    <div class="contact-info">
+                        <div class="contact-card">
+                            <div class="contact-icon-large">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Visit Our Office</h4>
+                                <p>123 Education Street, Westlands<br>Nairobi, Kenya 00100</p>
+                                <div class="contact-sub-info">
+                                    <i class="fas fa-clock"></i>
+                                    <span>Mon - Fri: 9:00 AM - 6:00 PM</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-card">
+                            <div class="contact-icon-large">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Call Us</h4>
+                                <p class="contact-number">+254 700 000 000</p>
+                                <p class="contact-number">+254 722 000 000</p>
+                                <div class="contact-sub-info">
+                                    <i class="fas fa-globe"></i>
+                                    <span>Available 24/7 for emergencies</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-card">
+                            <div class="contact-icon-large">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Email Us</h4>
+                                <p class="contact-email">support@azsubay.dev</p>
+                                <p class="contact-email">info@azsubay.dev</p>
+                                <div class="contact-sub-info">
+                                    <i class="fas fa-reply"></i>
+                                    <span>Response within 24 hours</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-card">
+                            <div class="contact-icon-large">
+                                <i class="fab fa-whatsapp"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4>WhatsApp Support</h4>
+                                <p class="contact-number">+254 711 000 000</p>
+                                <div class="contact-sub-info">
+                                    <i class="fas fa-comments"></i>
+                                    <span>Instant chat support available</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-form-container">
+                        <div class="form-header">
+                            <h3><i class="fas fa-paper-plane"></i> Send Us a Message</h3>
+                            <p>Fill out the form below and we'll get back to you as soon as possible.</p>
+                        </div>
+                        
+                        <form id="contactForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="contactName">
+                                        <i class="fas fa-user"></i> Full Name *
+                                    </label>
+                                    <input type="text" id="contactName" required placeholder="John Doe">
+                                </div>
+                                <div class="form-group">
+                                    <label for="contactEmail">
+                                        <i class="fas fa-envelope"></i> Email Address *
+                                    </label>
+                                    <input type="email" id="contactEmail" required placeholder="john@example.com">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="contactPhone">
+                                        <i class="fas fa-phone"></i> Phone Number
+                                    </label>
+                                    <input type="tel" id="contactPhone" placeholder="+254
