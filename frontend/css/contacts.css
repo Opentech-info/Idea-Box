@@ -1,0 +1,275 @@
+/* ===== CONTACTS PAGE SPECIFIC STYLES ===== */
+
+/* ===== SECTION PADDING ===== */
+.contact-header-section,
+.contact-ad-section,
+.contact-services-section,
+.contact-main-section {
+    padding: 60px 0;
+}
+
+/* ===== CONTACT HEADER SECTION ===== */
+.contact-header-section {
+    background: linear-gradient(135deg, var(--background-card) 0%, var(--background-dark) 100%);
+    margin-top: 70px; /* Adjust for fixed navbar */
+}
+
+.contact-header .header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    text-align: center;
+}
+
+.header-text h2 {
+    font-size: 2.5rem;
+    color: var(--text-primary);
+    margin-bottom: 15px;
+}
+
+.header-text p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 500px;
+    line-height: 1.6;
+}
+
+.header-image img {
+    max-width: 250px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px var(--shadow-color);
+}
+
+/* ===== ADVERTISEMENT VIDEO SECTION ===== */
+.ad-video-container {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px var(--shadow-color);
+}
+
+.ad-video {
+    width: 100%;
+    display: block;
+}
+
+.ad-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    color: var(--text-primary);
+}
+
+.ad-overlay h3 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.ad-overlay p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+/* ===== SERVICES SECTION ===== */
+.contact-services-section {
+    background: var(--background-dark);
+}
+
+.contact-services {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.service-card {
+    background: var(--background-card);
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(229, 9, 20, 0.15);
+}
+
+.service-icon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.service-card h4 {
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+}
+
+.service-card p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* ===== CONTACT INFO & FORM SECTION ===== */
+.contact-main-section {
+    background: var(--background-card);
+}
+
+.contact-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+}
+
+.contact-info {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.contact-card {
+    background: var(--background-dark);
+    padding: 25px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: transform 0.3s ease;
+}
+
+.contact-card:hover {
+    transform: translateY(-5px);
+}
+
+.contact-icon-large {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    flex-shrink: 0;
+    width: 60px;
+    text-align: center;
+}
+
+.contact-details h4 {
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+}
+
+.contact-details p {
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+    line-height: 1.5;
+}
+
+.contact-number,
+.contact-email {
+    display: block;
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.contact-sub-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 15px;
+}
+
+.contact-sub-info i {
+    color: var(--primary-color);
+}
+
+.contact-form-container {
+    background: var(--background-dark);
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-header h3 {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+}
+
+.form-header p {
+    color: var(--text-secondary);
+}
+
+.form-actions {
+    margin-top: 20px;
+}
+
+.btn-large {
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    width: 100%;
+}
+
+/* ===== RESPONSIVE DESIGN - CONTACTS ===== */
+
+/* Small tablets: 768px and up */
+@media (min-width: 768px) {
+    .contact-header .header-content {
+        flex-direction: row;
+        text-align: left;
+        gap: 50px;
+    }
+
+    .ad-overlay h3 {
+        font-size: 2.2rem;
+    }
+
+    .contact-services {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .contacts-content {
+        grid-template-columns: 1fr 1fr;
+        gap: 50px;
+    }
+
+    .contact-info {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-large {
+        width: auto;
+    }
+}
+
+/* Large tablets and small desktops: 1024px and up */
+@media (min-width: 1024px) {
+    .contact-services {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .contacts-content {
+        grid-template-columns: 1.2fr 1fr;
+        gap: 60px;
+    }
+
+    .contact-info {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

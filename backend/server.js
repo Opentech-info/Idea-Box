@@ -88,13 +88,13 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
-// Error handling middleware
+// General error handling middleware (should be after routes, before 404)
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ message: 'Something went wrong!' });
 });
 
-// 404 handler
+// 404 Not Found handler (should be the last middleware)
 app.use((req, res) => {
     res.status(404).json({ message: 'Route not found' });
 });

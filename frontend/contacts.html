@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us - AZsubay.dev | School Project Platform</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/contacts.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -18,8 +19,8 @@
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="index.html#projects" class="nav-link">Projects</a>
                 <a href="contacts.html" class="nav-link active">Contact</a>
-                <a href="#" class="nav-link" id="dashboardLink" style="display: none;">Dashboard</a>
-                <a href="#" class="nav-link" id="adminLink" style="display: none;">Admin</a>
+                <a href="dashboard.html" class="nav-link" id="dashboardLink" style="display: none;">Dashboard</a>
+                <a href="admin.html" class="nav-link" id="adminLink" style="display: none;">Admin</a>
             </div>
             <div class="nav-actions">
                 <div class="cart-icon" id="cartIcon" style="display: none;">
@@ -41,7 +42,7 @@
     <!-- Main Content -->
     <main>
         <!-- Contact Page Header -->
-        <section class="contact-header-section" style="margin-top: 80px; padding: 60px 0; background: linear-gradient(135deg, var(--background-card) 0%, var(--background-dark) 100%);">
+        <section class="contact-header-section">
             <div class="container">
                 <div class="contact-header">
                     <div class="header-content">
@@ -50,7 +51,7 @@
                             <p>We're here to help and answer any question you might have. We look forward to hearing from you!</p>
                         </div>
                         <div class="header-image">
-                            <img src="../pict/me6.png" alt="Contact Us" class="contact-header-image" style="max-width: 300px; border-radius: 15px;">
+                            <img src="../pict/me6.png" alt="Contact Us" class="contact-header-image">
                         </div>
                     </div>
                 </div>
@@ -60,12 +61,12 @@
         <!-- Advertisement Video Section -->
         <section class="contact-ad-section">
             <div class="container">
-                <div class="ad-video-container" style="position: relative; border-radius: 15px; overflow: hidden;">
-                    <video autoplay muted loop playsinline class="ad-video" style="width: 100%; border-radius: 15px;">
+                <div class="ad-video-container">
+                    <video autoplay muted loop playsinline class="ad-video">
                         <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
-                    <div class="ad-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; background: rgba(0,0,0,0.7); padding: 30px; border-radius: 15px;">
+                    <div class="ad-overlay">
                         <h3>🚀 Transform Your Learning Journey</h3>
                         <p>Discover premium educational projects and resources</p>
                         <button class="btn btn-primary ad-cta" onclick="window.location.href='index.html#projects'">Explore Projects</button>
@@ -75,7 +76,7 @@
         </section>
 
         <!-- Featured Services Section -->
-        <section class="contact-services-section" style="padding: 80px 0; background: var(--background-dark);">
+        <section class="contact-services-section">
             <div class="container">
                 <div class="section-header">
                     <h2>Our Services</h2>
@@ -115,7 +116,7 @@
         </section>
 
         <!-- Contact Information and Form Section -->
-        <section class="contact-main-section" style="padding: 80px 0; background: var(--background-card);">
+        <section class="contact-main-section">
             <div class="container">
                 <div class="contact-content">
                     <div class="contact-info">
@@ -205,4 +206,99 @@
                                     <label for="contactPhone">
                                         <i class="fas fa-phone"></i> Phone Number
                                     </label>
-                                    <input type="tel" id="contactPhone" placeholder="+254
+                                    <input type="tel" id="contactPhone" placeholder="+254 700 000 000">
+                                </div>
+                                <div class="form-group">
+                                    <label for="contactSubject">
+                                        <i class="fas fa-tag"></i> Subject *
+                                    </label>
+                                    <input type="text" id="contactSubject" required placeholder="How can we help?">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="contactMessage">
+                                    <i class="fas fa-comment-alt"></i> Message *
+                                </label>
+                                <textarea id="contactMessage" rows="6" required placeholder="Tell us more about your project or inquiry..."></textarea>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="contactPriority">
+                                        <i class="fas fa-exclamation-triangle"></i> Priority Level
+                                    </label>
+                                    <select id="contactPriority">
+                                        <option value="low">Low</option>
+                                        <option value="medium" selected>Medium</option>
+                                        <option value="high">High</option>
+                                        <option value="urgent">Urgent</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary btn-large">
+                                    <i class="fas fa-paper-plane"></i> Send Message
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>AZsubay.dev</h3>
+                    <p>Empowering students with quality educational projects and resources.</p>
+                    <div class="social-links">
+                        <a href="https://github.com/AZsubay" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/opentech.info/" target="_blank"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#projects">Projects</a></li>
+                        <li><a href="dashboard.html" id="footerDashboard">Dashboard</a></li>
+                        <li><a href="admin.html" id="footerAdmin">Admin</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="contacts.html">Contact Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 AZsubay.dev. All rights reserved. | Designed with ❤️ for students</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification Toast -->
+    <div class="toast" id="toast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage">Success!</span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/contact.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - AZsubay.dev</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>AZsubay<span>.dev</span></h1>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="index.html#projects" class="nav-link">Projects</a>
+                <a href="contacts.html" class="nav-link">Contact</a>
+                <a href="dashboard.html" class="nav-link active" id="dashboardLink" style="display: none;">Dashboard</a>
+                <a href="admin.html" class="nav-link" id="adminLink" style="display: none;">Admin</a>
+            </div>
+            <div class="nav-actions">
+                <div class="nav-auth" id="navAuth">
+                    <button class="btn btn-outline" id="loginBtn">Login</button>
+                    <button class="btn btn-primary" id="registerBtn">Register</button>
+                    <button class="btn btn-danger" id="logoutBtn" style="display: none;">Logout</button>
+                </div>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <section class="dashboard-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 id="welcomeMessage">Welcome, User!</h2>
+                    <p>Manage your saved projects and profile information here.</p>
+                </div>
+
+                <div class="dashboard-content">
+                    <!-- Sidebar -->
+                    <aside class="dashboard-sidebar">
+                        <ul>
+                            <li><a href="#" class="dashboard-nav-link active" data-tab="saved-projects"><i class="fas fa-heart"></i> Saved Projects</a></li>
+                            <li><a href="#" class="dashboard-nav-link" data-tab="profile"><i class="fas fa-user-circle"></i> My Profile</a></li>
+                            <li><a href="#" class="dashboard-nav-link" data-tab="orders"><i class="fas fa-receipt"></i> Order History</a></li>
+                            <li><a href="#" class="dashboard-nav-link" data-tab="settings"><i class="fas fa-cog"></i> Settings</a></li>
+                        </ul>
+                    </aside>
+
+                    <!-- Main Panel -->
+                    <div class="dashboard-panel">
+                        <!-- Saved Projects Tab -->
+                        <div id="saved-projects-tab" class="dashboard-tab active">
+                            <h3><i class="fas fa-heart"></i> My Saved Projects</h3>
+                            <div id="savedProjectsGrid" class="projects-grid">
+                                <!-- Saved projects will be loaded here by dashboard.js -->
+                                <p>Loading saved projects...</p>
+                            </div>
+                        </div>
+
+                        <!-- Profile Tab -->
+                        <div id="profile-tab" class="dashboard-tab" style="display: none;">
+                            <h3><i class="fas fa-user-circle"></i> My Profile</h3>
+                            <p>Profile management feature coming soon.</p>
+                        </div>
+
+                        <!-- Orders Tab -->
+                        <div id="orders-tab" class="dashboard-tab" style="display: none;">
+                            <h3><i class="fas fa-receipt"></i> Order History</h3>
+                            <p>Order history feature coming soon.</p>
+                        </div>
+
+                        <!-- Settings Tab -->
+                        <div id="settings-tab" class="dashboard-tab" style="display: none;">
+                            <h3><i class="fas fa-cog"></i> Settings</h3>
+                            <p>Account settings feature coming soon.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Notification Toast -->
+    <div class="toast" id="toast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage">Success!</span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

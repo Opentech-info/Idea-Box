@@ -321,8 +321,8 @@ class AppHandler {
         }
 
         modal.innerHTML = `
-            <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
-                <span class="close" onclick="this.parentElement.parentElement.style.display='none'">&times;</span>
+            <div class="modal-content">
+                <span class="close" onclick="appHandler.closeModal('projectDetailsModal')">&times;</span>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: start;">
                     <div>
                         <img src="${project.preview_media || '../pict/me6.png'}" 
@@ -363,12 +363,12 @@ class AppHandler {
                         ` : ''}
                         <div style="display: flex; gap: 10px; margin-top: 30px;">
                             <button class="cart-btn ${project.in_cart ? 'added' : ''}" 
-                                    onclick="appHandler.toggleCart(${project.id}); document.getElementById('projectDetailsModal').style.display='none';"
+                                    onclick="appHandler.toggleCart(${project.id}); appHandler.closeModal('projectDetailsModal');"
                                     style="flex: 1;">
                                 <i class="fas fa-heart"></i>
                                 ${project.in_cart ? 'Saved' : 'Save Project'}
                             </button>
-                            <button onclick="document.getElementById('projectDetailsModal').style.display='none'" 
+                            <button onclick="appHandler.closeModal('projectDetailsModal')" 
                                     class="btn btn-outline" 
                                     style="flex: 1;">
                                 Close
@@ -379,12 +379,12 @@ class AppHandler {
             </div>
         `;
 
-        modal.style.display = 'block';
+        this.openModal('projectDetailsModal');
 
         // Close modal when clicking outside
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
-                modal.style.display = 'none';
+                this.closeModal('projectDetailsModal');
             }
         });
     }
@@ -540,8 +540,7 @@ class AppHandler {
         const modal = document.getElementById('cartModal');
         if (!modal) return;
 
-        this.renderCartItems();
-        modal.style.display = 'block';
+        this.openModal('cartModal', () => this.renderCartItems());
     }
 
     renderCartItems() {
@@ -612,7 +611,7 @@ class AppHandler {
         const closeCart = document.getElementById('closeCart');
         if (closeCart) {
             closeCart.addEventListener('click', () => {
-                document.getElementById('cartModal').style.display = 'none';
+                this.closeModal('cartModal');
             });
         }
 
@@ -633,7 +632,7 @@ class AppHandler {
         if (cartModal) {
             cartModal.addEventListener('click', (e) => {
                 if (e.target === cartModal) {
-                    cartModal.style.display = 'none';
+                    this.closeModal('cartModal');
                 }
             });
         }
@@ -661,14 +660,8 @@ class AppHandler {
             return;
         }
 
-        const cartModal = document.getElementById('cartModal');
-        const checkoutModal = document.getElementById('checkoutModal');
-
-        if (cartModal) cartModal.style.display = 'none';
-        if (checkoutModal) {
-            this.renderCheckoutSummary();
-            checkoutModal.style.display = 'block';
-        }
+        this.closeModal('cartModal');
+        this.openModal('checkoutModal', () => this.renderCheckoutSummary());
     }
 
     renderCheckoutSummary() {
@@ -704,7 +697,7 @@ class AppHandler {
         const closeCheckout = document.getElementById('closeCheckout');
         if (closeCheckout) {
             closeCheckout.addEventListener('click', () => {
-                document.getElementById('checkoutModal').style.display = 'none';
+                this.closeModal('checkoutModal');
             });
         }
 
@@ -712,7 +705,7 @@ class AppHandler {
         const backToCartBtn = document.getElementById('backToCartBtn');
         if (backToCartBtn) {
             backToCartBtn.addEventListener('click', () => {
-                document.getElementById('checkoutModal').style.display = 'none';
+                this.closeModal('checkoutModal');
                 this.showCartModal();
             });
         }
@@ -728,7 +721,7 @@ class AppHandler {
         if (checkoutModal) {
             checkoutModal.addEventListener('click', (e) => {
                 if (e.target === checkoutModal) {
-                    checkoutModal.style.display = 'none';
+                    this.closeModal('checkoutModal');
                 }
             });
         }
@@ -783,7 +776,7 @@ class AppHandler {
                 this.showOrderSuccessModal(order.order_number, order.total_amount);
                 
                 // Close checkout modal
-                document.getElementById('checkoutModal').style.display = 'none';
+                this.closeModal('checkoutModal');
                 
                 authHandler.showToast('Order completed successfully!', 'success');
             } else {
@@ -801,7 +794,7 @@ class AppHandler {
         document.getElementById('orderNumber').textContent = orderNumber;
         document.getElementById('orderAmount').textContent = `$${parseFloat(totalAmount).toFixed(2)}`;
         
-        modal.style.display = 'block';
+        this.openModal('orderSuccessModal');
     }
 
     bindOrderSuccessEvents() {
@@ -811,13 +804,13 @@ class AppHandler {
 
         if (closeOrderSuccess) {
             closeOrderSuccess.addEventListener('click', () => {
-                document.getElementById('orderSuccessModal').style.display = 'none';
+                this.closeModal('orderSuccessModal');
             });
         }
 
         if (viewOrdersBtn) {
             viewOrdersBtn.addEventListener('click', () => {
-                document.getElementById('orderSuccessModal').style.display = 'none';
+                this.closeModal('orderSuccessModal');
                 // In a real app, navigate to orders page
                 authHandler.showToast('Orders page would open here', 'info');
             });
@@ -825,7 +818,7 @@ class AppHandler {
 
         if (continueShoppingBtn) {
             continueShoppingBtn.addEventListener('click', () => {
-                document.getElementById('orderSuccessModal').style.display = 'none';
+                this.closeModal('orderSuccessModal');
             });
         }
 
@@ -834,7 +827,7 @@ class AppHandler {
         if (orderSuccessModal) {
             orderSuccessModal.addEventListener('click', (e) => {
                 if (e.target === orderSuccessModal) {
-                    orderSuccessModal.style.display = 'none';
+                    this.closeModal('orderSuccessModal');
                 }
             });
         }
@@ -856,7 +849,7 @@ class AppHandler {
         const closeContact = document.getElementById('closeContact');
         if (closeContact) {
             closeContact.addEventListener('click', () => {
-                document.getElementById('contactModal').style.display = 'none';
+                this.closeModal('contactModal');
             });
         }
 
@@ -871,17 +864,14 @@ class AppHandler {
         if (contactModal) {
             contactModal.addEventListener('click', (e) => {
                 if (e.target === contactModal) {
-                    contactModal.style.display = 'none';
+                    this.closeModal('contactModal');
                 }
             });
         }
     }
 
     showContactModal() {
-        const modal = document.getElementById('contactModal');
-        if (modal) {
-            modal.style.display = 'block';
-        }
+        this.openModal('contactModal');
     }
 
     async handleContactSubmit(e) {
@@ -916,7 +906,7 @@ class AppHandler {
                 document.getElementById('contactForm').reset();
                 
                 // Close modal
-                document.getElementById('contactModal').style.display = 'none';
+                this.closeModal('contactModal');
                 
                 authHandler.showToast('Message sent successfully!', 'success');
             } else {
@@ -924,6 +914,25 @@ class AppHandler {
             }
         } catch (error) {
             authHandler.showToast('Failed to send message. Please try again.', 'error');
+        }
+    }
+
+    // ===== MODAL HELPERS =====
+
+    openModal(modalId, onOpenCallback) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            if (onOpenCallback) onOpenCallback();
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+    }
+
+    closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = ''; // Restore background scrolling
         }
     }
 

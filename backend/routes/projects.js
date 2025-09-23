@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
             FROM projects p
             LEFT JOIN cart c ON p.id = c.project_id AND c.user_id = ?
             ORDER BY p.created_at DESC
-        `, [req.query.userId || null]);
+        `, [req.user ? req.user.id : null]);
 
         res.json(projects);
     } catch (error) {
