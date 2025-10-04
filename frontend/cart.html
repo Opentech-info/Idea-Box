@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,189 +6,171 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart | AZsubay.dev</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* ===== AZsubay.dev School Project Platform - Netflix Style ===== */
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/cart.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>AZsubay<span>.dev</span></h1>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="projects.html" class="nav-link">Projects</a>
+                <a href="contacts.html" class="nav-link">Contact</a>
+                <a href="dashboard.html" class="nav-link" id="dashboardLink">Profile</a>
+            </div>
+            <div class="nav-actions">
+                <div class="cart-icon" id="cartIcon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-        /* ===== RESET & BASE STYLES ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <!-- Main Cart Content -->
+    <main class="container" style="margin-top: 80px;">
+        <h2 style="margin-bottom: 1.5rem;">Your Cart</h2>
+        <div id="cartItems" class="cart-items"></div>
+        <div class="cart-summary">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotal">$0.00</span>
+            </div>
+            <div class="cart-actions">
+                <button class="btn btn-outline" id="clearCartBtn">Clear Cart</button>
+                <button class="btn btn-primary" id="checkoutBtn">Proceed to Checkout</button>
+            </div>
+        </div>
+    </main>
 
-        :root {
-            --primary-color: #e50914;
-            --secondary-color: #141414;
-            --accent-color: #f5f5f1;
-            --text-primary: #ffffff;
-            --text-secondary: #b3b3b3;
-            --background-dark: #000000;
-            --background-card: #181818;
-            --success-color: #46d369;
-            --warning-color: #ffa500;
-            --error-color: #e87c03;
-            --border-color: #404040;
-            --shadow-color: rgba(0, 0, 0, 0.5);
-            --gradient-overlay: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 70%, transparent 100%);
-        }
+    <!-- Checkout Modal -->
+    <div class="modal" id="checkoutModal">
+        <div class="modal-content">
+            <span class="close" id="closeCheckout">&times;</span>
+            <h2><i class="fas fa-credit-card"></i> Checkout</h2>
+            <form id="checkoutForm">
+                <div class="checkout-section">
+                    <h3>Order Summary</h3>
+                    <div id="checkoutOrderSummary" class="order-summary"></div>
+                </div>
+                <div class="checkout-section">
+                    <h3>Customer Information</h3>
+                    <div class="form-group">
+                        <label for="customerName">Full Name *</label>
+                        <input type="text" id="customerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerEmail">Email Address *</label>
+                        <input type="email" id="customerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerPhone">Phone Number</label>
+                        <input type="tel" id="customerPhone">
+                    </div>
+                    <div class="form-group">
+                        <label for="customerAddress">Address</label>
+                        <textarea id="customerAddress" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="checkout-section">
+                    <h3>Payment Method</h3>
+                    <div class="payment-methods">
+                        <label class="payment-method">
+                            <input type="radio" name="paymentMethod" value="mpesa" required>
+                            <i class="fab fa-cc-mastercard" style="color: #5bbd5b;"></i>
+                            <span>M-Pesa</span>
+                        </label>
+                        <label class="payment-method">
+                            <input type="radio" name="paymentMethod" value="tigopesa">
+                            <i class="fas fa-mobile-alt" style="color: #1b75bc;"></i>
+                            <span>Tigo Pesa</span>
+                        </label>
+                        <label class="payment-method">
+                            <input type="radio" name="paymentMethod" value="airtelmoney">
+                            <i class="fas fa-mobile-alt" style="color: #ee1c25;"></i>
+                            <span>Airtel Money</span>
+                        </label>
+                        <label class="payment-method">
+                            <input type="radio" name="paymentMethod" value="halopesa">
+                            <i class="fas fa-mobile-alt" style="color: #fbb034;"></i>
+                            <span>HaloPesa</span>
+                        </label>
+                        <label class="payment-method">
+                            <input type="radio" name="paymentMethod" value="ezypesa">
+                            <i class="fas fa-mobile-alt" style="color: #f26522;"></i>
+                            <span>EzyPesa</span>
+                        </label>
+                        <label class="payment-method">
+                            <input type="radio" name="paymentMethod" value="stripe">
+                            <i class="fab fa-cc-stripe" style="color: #635bff;"></i>
+                            <span>Stripe (Card/International)</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="checkout-section">
+                    <h3>Additional Notes</h3>
+                    <div class="form-group">
+                        <textarea id="orderNotes" rows="3" placeholder="Any special instructions or notes..."></textarea>
+                    </div>
+                </div>
+                <div class="checkout-summary">
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span id="checkoutSubtotal">$0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax:</span>
+                        <span id="checkoutTax">$0.00</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total:</span>
+                        <span id="checkoutTotal">$0.00</span>
+                    </div>
+                </div>
+                <div class="checkout-actions">
+                    <button type="button" class="btn btn-outline" id="backToCartBtn">Back to Cart</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-lock"></i> Complete Purchase
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--background-dark);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
+    <!-- Order Success Modal -->
+    <div class="modal" id="orderSuccessModal">
+        <div class="modal-content">
+            <span class="close" id="closeOrderSuccess">&times;</span>
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Order Successful!</h2>
+            <p>Thank you for your purchase! Your order has been received and is being processed.</p>
+            <div class="order-details">
+                <p><strong>Order Number:</strong> <span id="orderNumber"></span></p>
+                <p><strong>Total Amount:</strong> <span id="orderAmount"></span></p>
+            </div>
+            <div class="success-actions">
+                <button class="btn btn-outline" id="viewOrdersBtn">View My Orders</button>
+                <button class="btn btn-primary" id="continueShoppingBtn">Continue Shopping</button>
+            </div>
+        </div>
+    </div>
 
-        /* ===== MOBILE-FIRST BASE STYLES ===== */
+    <!-- Notification Toast -->
+    <div class="toast" id="toast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage">Success!</span>
+        </div>
+    </div>
 
-        /* Container - Mobile First */
-        .container {
-            max-width: 100%;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        /* ===== NAVBAR - MOBILE FIRST ===== */
-        .navbar {
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 70%, transparent 100%);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            padding: 15px 0;
-            transition: all 0.3s ease;
-        }
-
-        .navbar.scrolled {
-            background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(10px);
-            padding: 10px 0;
-        }
-
-        .nav-container {
-            max-width: 100%;
-            margin: 0 auto;
-            padding: 0 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-logo h1 {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-
-        .nav-logo h1 span {
-            color: var(--accent-color);
-        }
-
-        .nav-menu {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background: var(--background-card);
-            flex-direction: column;
-            padding: 20px;
-            gap: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-
-        .nav-menu.active {
-            display: flex;
-        }
-
-        .nav-link {
-            color: var(--text-primary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-            position: relative;
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-            color: var(--primary-color);
-        }
-
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--primary-color);
-            transition: width 0.3s ease;
-        }
-
-        .nav-link:hover::after,
-        .nav-link.active::after {
-            width: 100%;
-        }
-
-        .nav-actions {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .cart-icon {
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .cart-icon:hover {
-            transform: scale(1.1);
-        }
-
-        .cart-icon i {
-            font-size: 1.3rem;
-            color: var(--text-primary);
-        }
-
-        .cart-count {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: var(--primary-color);
-            color: var(--text-primary);
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-
-        .nav-auth {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            font-size: 0.9rem;
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--text-primary);
-            border: 2px solid var(--text-primary);
-        }
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

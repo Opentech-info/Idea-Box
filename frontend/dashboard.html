@@ -60,28 +60,163 @@
                         <!-- Saved Projects Tab -->
                         <div id="saved-projects-tab" class="dashboard-tab active">
                             <h3><i class="fas fa-heart"></i> My Saved Projects</h3>
-                            <div id="savedProjectsGrid" class="projects-grid">
+                            <div id="savedProjectsGrid" class="saved-projects-grid-adv">
                                 <!-- Saved projects will be loaded here by dashboard.js -->
-                                <p>Loading saved projects...</p>
+                                <div class="saved-projects-loading">
+                                    <div class="skeleton-card"></div>
+                                    <div class="skeleton-card"></div>
+                                    <div class="skeleton-card"></div>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Profile Tab -->
                         <div id="profile-tab" class="dashboard-tab" style="display: none;">
                             <h3><i class="fas fa-user-circle"></i> My Profile</h3>
-                            <p>Profile management feature coming soon.</p>
+                            <form id="profileForm" class="profile-form" enctype="multipart/form-data">
+                                <div class="profile-avatar">
+                                    <img id="profileAvatarImg" src="../pict/default-avatar.png" alt="Profile Picture" class="avatar-circle" style="width:120px;height:120px;object-fit:cover;border-radius:50%;">
+                                    <input type="file" id="profileAvatarInput" accept="image/*" style="display:none;">
+                                    <button type="button" class="btn btn-outline" id="changeAvatarBtn">Change Picture</button>
+                                </div>
+                                <div class="form-group">
+                                    <label for="profileName">Full Name</label>
+                                    <input type="text" id="profileName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="profileEmail">Email</label>
+                                    <input type="email" id="profileEmail" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="profilePhone">Phone</label>
+                                    <input type="tel" id="profilePhone">
+                                </div>
+                                <div class="form-group">
+                                    <label for="profileBio">Bio</label>
+                                    <textarea id="profileBio" rows="3" placeholder="Tell us about yourself..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </form>
                         </div>
 
                         <!-- Orders Tab -->
                         <div id="orders-tab" class="dashboard-tab" style="display: none;">
                             <h3><i class="fas fa-receipt"></i> Order History</h3>
-                            <p>Order history feature coming soon.</p>
+                            <div id="ordersList" class="order-list"></div>
                         </div>
 
                         <!-- Settings Tab -->
                         <div id="settings-tab" class="dashboard-tab" style="display: none;">
                             <h3><i class="fas fa-cog"></i> Settings</h3>
-                            <p>Account settings feature coming soon.</p>
+                            <div class="settings-sections">
+                                <div class="settings-section">
+                                    <h4><i class="fas fa-user-cog"></i> Account Settings</h4>
+                                    <div class="setting-item">
+                                        <div>
+                                            <div class="setting-label">Change Password</div>
+                                            <div class="setting-description">Update your account password for security.</div>
+                                        </div>
+                                        <button class="btn btn-outline" id="changePasswordBtn">Change</button>
+                                    </div>
+                                </div>
+                                <div class="settings-section">
+                                    <h4><i class="fas fa-bell"></i> Notifications</h4>
+                                    <div class="setting-item">
+                                        <div class="setting-label">Email Notifications</div>
+                                        <label class="setting-toggle">
+                                            <input type="checkbox" id="emailNotificationsToggle">
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <div class="setting-item">
+                                        <div class="setting-label">SMS Notifications</div>
+                                        <label class="setting-toggle">
+                                            <input type="checkbox" id="smsNotificationsToggle">
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="settings-section">
+                                    <h4><i class="fas fa-shield-alt"></i> Security</h4>
+                                    <div class="setting-item">
+                                        <div class="setting-label">Two-Factor Authentication (2FA)</div>
+                                        <button class="btn btn-outline" id="manage2FABtn">Manage</button>
+                                    </div>
+                                    <div id="2faStatus" class="2fa-status"></div>
+                                </div>
+                                <div class="settings-section danger-zone">
+                                    <h4><i class="fas fa-exclamation-triangle"></i> Danger Zone</h4>
+                                    <div class="setting-item danger">
+                                        <div>
+                                            <div class="setting-label">Delete Account</div>
+                                            <div class="setting-description">Permanently delete your account and all data. This action cannot be undone.</div>
+                                        </div>
+                                        <button class="btn btn-danger" id="deleteAccountBtn">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Change Password Modal -->
+                        <div class="modal" id="changePasswordModal" style="display:none;">
+                            <div class="modal-content" style="max-width:400px;">
+                                <span class="close" id="closeChangePassword">&times;</span>
+                                <h2>Change Password</h2>
+                                <form id="changePasswordForm">
+                                    <div class="form-group">
+                                        <label for="oldPassword">Old Password</label>
+                                        <input type="password" id="oldPassword" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newPassword">New Password</label>
+                                        <input type="password" id="newPassword" required>
+                                        <div id="passwordStrength" class="password-strength"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirmPassword">Confirm New Password</label>
+                                        <input type="password" id="confirmPassword" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Change Password</button>
+                                </form>
+                                <div id="passwordAwardAnimation" class="award-animation" style="display:none;"></div>
+                            </div>
+                        </div>
+
+                        <!-- 2FA Modal -->
+                        <div class="modal" id="twoFAModal" style="display:none;">
+                            <div class="modal-content" style="max-width:400px;">
+                                <span class="close" id="close2FAModal">&times;</span>
+                                <h2>Two-Factor Authentication</h2>
+                                <div id="2faSetupSection">
+                                    <p>Secure your account with 2FA. You will be asked for a code from your authenticator app or SMS when logging in.</p>
+                                    <button class="btn btn-primary" id="enable2FABtn">Enable 2FA</button>
+                                    <button class="btn btn-outline" id="disable2FABtn" style="display:none;">Disable 2FA</button>
+                                </div>
+                                <form id="verify2FAForm" style="display:none;">
+                                    <div class="form-group">
+                                        <label for="twoFACode">Enter 2FA Code</label>
+                                        <input type="text" id="twoFACode" maxlength="6" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Verify</button>
+                                </form>
+                                <div id="2faMessage"></div>
+                            </div>
+                        </div>
+
+                        <!-- Delete Account Modal -->
+                        <div class="modal" id="deleteAccountModal" style="display:none;">
+                            <div class="modal-content" style="max-width:400px;">
+                                <span class="close" id="closeDeleteAccount">&times;</span>
+                                <h2>Delete Account</h2>
+                                <p>Are you sure you want to permanently delete your account? This action cannot be undone.</p>
+                                <form id="deleteAccountForm">
+                                    <div class="form-group">
+                                        <label for="deleteConfirm">Type <b>DELETE</b> to confirm</label>
+                                        <input type="text" id="deleteConfirm" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-danger">Delete Account</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>

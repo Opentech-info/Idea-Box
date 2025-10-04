@@ -7,6 +7,7 @@ const dbConfig = {
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'school_project_platform',
+    port: process.env.DB_PORT || 3307,   // 👈 add this line
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0

@@ -154,11 +154,27 @@ class ApiService {
         return await this.request(`/orders/${orderId}`);
     }
 
+    // Unified payment for all gateways
     async processPayment(orderId, paymentData) {
-        return await this.request(`/orders/${orderId}/pay`, {
-            method: 'POST',
-            body: JSON.stringify(paymentData)
-        });
+        // If using mobile money or Stripe, call /api/payments/pay
+        const mobileGateways = ['mpesa', 'tigopesa', 'airtelmoney', 'halopesa', 'ezypesa', 'stripe'];
+        if (mobileGateways.includes(paymentData.payment_method)) {
+            return await this.request(`/payments/pay`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    order_id: orderId,
+                    payment_method: paymentData.payment_method,
+                    amount: paymentData.amount,
+                    phone: paymentData.phone || null
+                })
+            });
+        } else {
+            // fallback to legacy order payment
+            return await this.request(`/orders/${orderId}/pay`, {
+                method: 'POST',
+                body: JSON.stringify(paymentData)
+            });
+        }
     }
 
     async cancelOrder(orderId) {

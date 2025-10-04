@@ -6,6 +6,29 @@ class AppHandler {
         this.projects = [];
         this.cart = [];
         this.autoSlideInterval = null;
+        this.currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
+        this.translations = {
+            en: {
+                'nav.home': 'Home',
+                'nav.projects': 'Projects',
+                'nav.contact': 'Contact',
+                'nav.dashboard': 'Dashboard',
+                'nav.admin': 'Admin',
+                'nav.login': 'Login',
+                'nav.register': 'Register',
+                'nav.logout': 'Logout'
+            },
+            sw: {
+                'nav.home': 'Nyumbani',
+                'nav.projects': 'Miradi',
+                'nav.contact': 'Mawasiliano',
+                'nav.dashboard': 'Dashibodi',
+                'nav.admin': 'Msimamizi',
+                'nav.login': 'Ingia',
+                'nav.register': 'Jisajili',
+                'nav.logout': 'Toka'
+            }
+        };
         this.init();
     }
 
@@ -17,6 +40,8 @@ class AppHandler {
         this.startAutoSlide();
         this.initNavbarScroll();
         this.initHamburgerMenu();
+        this.initLanguageSwitcher();
+        this.updateLanguageUI();
         this.updateAuthUI();
     }
 
@@ -86,6 +111,111 @@ class AppHandler {
 
         // Project cards
         this.bindProjectEvents();
+    }
+
+    // ===== LANGUAGE SWITCHER METHODS =====
+
+    initLanguageSwitcher() {
+        const languageBtn = document.getElementById('languageBtn');
+        const languageDropdown = document.getElementById('languageDropdown');
+        const languageOptions = document.querySelectorAll('.language-option');
+
+        if (!languageBtn || !languageDropdown) return;
+
+        // Toggle dropdown
+        languageBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            languageDropdown.classList.toggle('active');
+        });
+
+        // Handle language selection
+        languageOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const selectedLang = option.dataset.lang;
+                this.switchLanguage(selectedLang);
+                languageDropdown.classList.remove('active');
+            });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            languageDropdown.classList.remove('active');
+        });
+    }
+
+    switchLanguage(language) {
+        if (this.currentLanguage === language) return;
+
+        this.currentLanguage = language;
+        localStorage.setItem('preferredLanguage', language);
+        this.updateLanguageUI();
+        
+        // Show toast notification
+        const langName = language === 'en' ? 'English' : 'Swahili';
+        authHandler.showToast(`Language changed to ${langName}`, 'success');
+    }
+
+    updateLanguageUI() {
+        const currentFlag = document.getElementById('currentFlag');
+        const currentLang = document.getElementById('currentLang');
+        const languageDropdown = document.getElementById('languageDropdown');
+
+        // Update button display
+        if (this.currentLanguage === 'en') {
+            if (currentFlag) currentFlag.textContent = '🇬🇧';
+            if (currentLang) currentLang.textContent = 'EN';
+        } else {
+            if (currentFlag) currentFlag.textContent = '🇹🇿';
+            if (currentLang) currentLang.textContent = 'SW';
+        }
+
+        // Always show both language options in dropdown
+        if (languageDropdown) {
+            languageDropdown.innerHTML = `
+                <div class="language-option" data-lang="en">
+                    <span class="flag">🇬🇧</span>
+                    <span class="lang-name">English</span>
+                </div>
+                <div class="language-option" data-lang="sw">
+                    <span class="flag">🇹🇿</span>
+                    <span class="lang-name">Swahili</span>
+                </div>
+            `;
+        }
+
+        // Update navigation link text
+        this.updateNavigationText();
+
+        // Re-attach event listeners to language options
+        const newLanguageOptions = document.querySelectorAll('.language-option');
+        newLanguageOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const selectedLang = option.dataset.lang;
+                this.switchLanguage(selectedLang);
+                document.getElementById('languageDropdown').classList.remove('active');
+            });
+        });
+    }
+
+    updateNavigationText() {
+        const navLinks = document.querySelectorAll('[data-lang-key]');
+        navLinks.forEach(link => {
+            const langKey = link.dataset.langKey;
+            if (this.translations[this.currentLanguage] && this.translations[this.currentLanguage][langKey]) {
+                link.textContent = this.translations[this.currentLanguage][langKey];
+            }
+        });
+
+        // Update logout button text
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn && logoutBtn.dataset.langKey) {
+            const langKey = logoutBtn.dataset.langKey;
+            if (this.translations[this.currentLanguage] && this.translations[this.currentLanguage][langKey]) {
+                logoutBtn.textContent = this.translations[this.currentLanguage][langKey];
+            }
+        }
     }
 
     async loadVideoSlider() {
@@ -735,7 +865,8 @@ class AppHandler {
         const customerPhone = document.getElementById('customerPhone').value;
         const customerAddress = document.getElementById('customerAddress').value;
         const orderNotes = document.getElementById('orderNotes').value;
-        const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value;
+    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value;
+    const phone = document.getElementById('customerPhone').value;
 
         if (!customerName || !customerEmail || !paymentMethod) {
             authHandler.showToast('Please fill in all required fields', 'error');
@@ -759,15 +890,17 @@ class AppHandler {
 
             const order = await api.createOrder(orderData);
 
-            // Process payment
+            // Process payment (pass phone for mobile money)
             const paymentData = {
                 payment_method: paymentMethod,
-                amount: order.total_amount
+                amount: order.total_amount,
+                phone: phone || undefined
             };
 
-            const payment = await api.processPayment(order.id, paymentData);
+            const paymentResp = await api.processPayment(order.id, paymentData);
+            const paymentStatus = paymentResp.payment?.status || paymentResp.status;
 
-            if (payment.status === 'completed') {
+            if (paymentStatus === 'completed') {
                 // Clear cart
                 this.cart = [];
                 this.updateCartUI();

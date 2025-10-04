@@ -5,7 +5,6 @@
 CREATE DATABASE IF NOT EXISTS school_project_platform;
 USE school_project_platform;
 
--- Users table
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
@@ -15,6 +14,12 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+-- 2FA fields
+ALTER TABLE users ADD COLUMN IF NOT EXISTS two_factor_enabled BOOLEAN DEFAULT 0;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS two_factor_secret VARCHAR(128);
+ALTER TABLE users ADD COLUMN IF NOT EXISTS two_factor_backup_codes TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS phone_number VARCHAR(32);
 
 -- Projects table
 CREATE TABLE IF NOT EXISTS projects (
