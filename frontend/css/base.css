@@ -1,3 +1,57 @@
+/* ===== ADVANCED TOAST/POPUP MESSAGE ===== */
+.toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    min-width: 260px;
+    max-width: 90vw;
+    background: rgba(24,24,24,0.98);
+    color: var(--text-primary);
+    border-radius: 16px;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+    display: none;
+    align-items: center;
+    padding: 0;
+    animation: toastIn 0.4s cubic-bezier(.77,0,.18,1);
+}
+.toast.show {
+    display: flex;
+}
+.toast-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 28px;
+    font-size: 1.08rem;
+}
+.toast i {
+    font-size: 1.6rem;
+    color: var(--primary-color);
+}
+.toast.success i { color: var(--success-color); }
+.toast.error i { color: var(--error-color); }
+.toast.warning i { color: var(--warning-color); }
+.toast .toastMessage {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+@media (max-width: 600px) {
+    .toast-content {
+        padding: 12px 10px;
+        font-size: 0.98rem;
+    }
+    .toast {
+        min-width: 160px;
+        border-radius: 8px;
+        bottom: 16px;
+    }
+}
+@keyframes toastIn {
+    from { opacity: 0; transform: translateY(40px) scale(0.95) translateX(-50%); }
+    to { opacity: 1; transform: translateY(0) scale(1) translateX(-50%); }
+}
 /* ===== AZsubay.dev School Project Platform - Base Styles ===== */
 
 /* ===== RESET & BASE STYLES ===== */
@@ -178,10 +232,41 @@ body.modal-open {
     font-weight: bold;
 }
 
+/* Responsive Logout Button */
 .nav-auth {
     display: flex;
     gap: 10px;
     align-items: center;
+}
+.btn.btn-danger#logoutBtn {
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+    box-shadow: 0 2px 8px rgba(229,9,20,0.08);
+    outline: none;
+}
+.btn.btn-danger#logoutBtn:hover, .btn.btn-danger#logoutBtn:focus {
+    background: #b0060f;
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(229,9,20,0.13);
+}
+@media (max-width: 600px) {
+    .btn.btn-danger#logoutBtn {
+        width: 100%;
+        padding: 10px 0;
+        font-size: 1.08rem;
+        border-radius: 6px;
+    }
+    .nav-auth {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 /* ===== LANGUAGE SWITCHER ===== */

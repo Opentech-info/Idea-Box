@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/project-ai-chat.css">
+    <script src="js/project-ai-chat.js" defer></script>
     <style>
         :root {
             --admin-primary: #6366f1;
@@ -374,4 +376,243 @@
         .btn-outline {
             background: transparent;
             color: var(--admin-text);
-            border: 1
+            border: 1px solid var(--admin-border);
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--admin-text);
+            font-weight: 500;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1px solid var(--admin-border);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--admin-text);
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            border-color: var(--admin-primary);
+            outline: none;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Tables */
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+
+        .table-header {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--admin-text);
+            font-weight: 500;
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid var(--admin-border);
+        }
+
+        .table-row {
+            background: rgba(255, 255, 255, 0.01);
+            transition: background 0.3s ease;
+        }
+
+        .table-row:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .table-cell {
+            padding: 1rem;
+            border-bottom: 1px solid var(--admin-border);
+            color: var(--admin-text);
+            font-size: 0.9rem;
+        }
+
+        .table-cell:last-child {
+            border-bottom: none;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--admin-success);
+        }
+
+        .badge-error {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--admin-error);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--admin-warning);
+        }
+
+        .badge-info {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--admin-info);
+        }
+
+        /* Misc */
+        hr {
+            border: 0;
+            height: 1px;
+            background: var(--admin-border);
+            margin: 1.5rem 0;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .admin-sidebar {
+                position: absolute;
+                transform: translateX(-100%);
+                width: 250px;
+                height: 100%;
+                padding: 1rem;
+                transition: transform 0.3s ease;
+            }
+
+            .admin-sidebar.active {
+                transform: translateX(0);
+            }
+
+            .admin-main {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-logo h1 {
+                font-size: 1.5rem;
+            }
+
+            .nav-menu {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-link {
+                font-size: 0.9rem;
+            }
+
+            .admin-stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+            }
+
+            .stat-label {
+                font-size: 0.8rem;
+            }
+
+            .content-card {
+                margin-bottom: 1.5rem;
+            }
+
+            .card-header {
+                padding: 1rem;
+            }
+
+            .card-title {
+                font-size: 1.2rem;
+            }
+
+            .btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.8rem;
+            }
+
+            .form-input,
+            .form-select,
+            .form-textarea {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .admin-table {
+                font-size: 0.8rem;
+            }
+
+            .table-header {
+                padding: 0.8rem;
+            }
+
+            .table-row {
+                padding: 0.8rem;
+            }
+
+            .table-cell {
+                padding: 0.8rem;
+            }
+
+            .badge {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Your HTML content here -->
+</body>
+</html>

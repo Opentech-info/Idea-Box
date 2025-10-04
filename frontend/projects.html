@@ -30,11 +30,99 @@
         </div>
     </nav>
 
-    <main class="container" style="margin-top: 80px;">
+
+    <!-- Advanced Image Slider (AWS-style, responsive) -->
+    <section class="video-slider" id="projectSlider">
+        <div class="slider-container">
+            <div class="slider-wrapper" id="projectSliderWrapper">
+                <!-- Slides will be dynamically loaded here -->
+            </div>
+            <button class="slider-btn prev" id="projectPrevBtn">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="slider-btn next" id="projectNextBtn">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <div class="slider-dots" id="projectSliderDots">
+                <!-- Dots will be dynamically loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <main class="container" style="margin-top: 40px;">
         <h2 style="margin-bottom: 1.5rem;">Explore All Project Categories</h2>
         <div class="categories-list" id="categoriesList"></div>
         <div class="projects-grid" id="projectsGrid"></div>
     </main>
+
+    <!-- Advanced Cool Footer -->
+    <footer class="advanced-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h2>AZsubay<span>.dev</span></h2>
+                <p>Empowering students with modern, real-world projects.<br>Built for learning, growth, and success.</p>
+            </div>
+            <div class="footer-social">
+                <a href="https://youtube.com/" target="_blank" aria-label="YouTube" class="footer-social-link youtube"><i class="fab fa-youtube"></i></a>
+                <a href="https://tiktok.com/" target="_blank" aria-label="TikTok" class="footer-social-link tiktok"><i class="fab fa-tiktok"></i></a>
+                <a href="https://github.com/Opentech-info/Idea-Box" target="_blank" aria-label="GitHub" class="footer-social-link github"><i class="fab fa-github"></i></a>
+                <a href="https://twitter.com/" target="_blank" aria-label="Twitter" class="footer-social-link twitter"><i class="fab fa-twitter"></i></a>
+            </div>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="projects.html">Projects</a>
+                <a href="contacts.html">Contact</a>
+                <a href="dashboard.html">Dashboard</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2025 AZsubay.dev. All rights reserved.</span>
+        </div>
+    </footer>
+
+    <!-- Project AI Chat Assistant -->
+    <div id="projectAIChatBtn" class="project-ai-chat-btn" title="Project AI - Your Assistant">
+        <i class="fas fa-robot"></i>
+    </div>
+    <div id="projectAIChatPopup" class="project-ai-chat-popup">
+        <div class="chat-header">
+            <span class="chat-title"><i class="fas fa-robot"></i> Project AI</span>
+            <button class="chat-close" id="closeProjectAIChat">&times;</button>
+        </div>
+        <div class="chat-messages" id="projectAIChatMessages">
+            <div class="chat-message ai">
+                <div class="chat-bubble">Hi! I am <b>Project AI</b>.<br>How can I help you with your school projects?</div>
+            </div>
+        </div>
+        <form class="chat-input-row" id="projectAIChatForm" autocomplete="off">
+            <input type="text" id="projectAIChatInput" placeholder="Type your message..." required />
+            <button type="submit"><i class="fas fa-paper-plane"></i></button>
+        </form>
+    </div>
+    <script>
+    // Project AI Chat Assistant Logic
+    const chatBtn = document.getElementById('projectAIChatBtn');
+    const chatPopup = document.getElementById('projectAIChatPopup');
+    const chatClose = document.getElementById('closeProjectAIChat');
+    const chatForm = document.getElementById('projectAIChatForm');
+    const chatInput = document.getElementById('projectAIChatInput');
+    const chatMessages = document.getElementById('projectAIChatMessages');
+    chatBtn.onclick = () => { chatPopup.classList.add('show'); chatInput.focus(); };
+    chatClose.onclick = () => chatPopup.classList.remove('show');
+    chatForm.onsubmit = e => {
+        e.preventDefault();
+        const msg = chatInput.value.trim();
+        if (!msg) return;
+        chatMessages.innerHTML += `<div class='chat-message user'><div class='chat-bubble'>${msg}</div></div>`;
+        chatInput.value = '';
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        // Placeholder for API integration
+        setTimeout(() => {
+            chatMessages.innerHTML += `<div class='chat-message ai'><div class='chat-bubble'>[Project AI will reply here]</div></div>`;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 800);
+    };
+    </script>
 
     <div class="toast" id="toast">
         <div class="toast-content">

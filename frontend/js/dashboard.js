@@ -95,7 +95,7 @@ class Dashboard {
         </div>`;
     }
 
-    // --- 2FA Modal Logic ---
+    // --- 2FA Modal Logic (Advanced, Backend Connected, TOTP + SMS) ---
     init2FA() {
         const modal = document.getElementById('twoFAModal');
         const openBtn = document.getElementById('manage2FABtn');
@@ -106,41 +106,198 @@ class Dashboard {
         const codeInput = document.getElementById('twoFACode');
         const statusDiv = document.getElementById('2faStatus');
         const msgDiv = document.getElementById('2faMessage');
+        // Add QR and backup codes containers if not present
+        let qrImg, backupCodesDiv, smsForm, smsInput, smsVerifyBtn, smsStatusDiv;
+        if (!document.getElementById('2faQrImg')) {
+            qrImg = document.createElement('img');
+            qrImg.id = '2faQrImg';
+            qrImg.style.display = 'block';
+            qrImg.style.margin = '18px auto 10px auto';
+            qrImg.style.maxWidth = '180px';
+            msgDiv.parentNode.insertBefore(qrImg, msgDiv);
+        } else {
+            qrImg = document.getElementById('2faQrImg');
+        }
+        if (!document.getElementById('2faBackupCodes')) {
+            backupCodesDiv = document.createElement('div');
+            backupCodesDiv.id = '2faBackupCodes';
+            backupCodesDiv.style.margin = '10px 0 0 0';
+            msgDiv.parentNode.appendChild(backupCodesDiv);
+        } else {
+            backupCodesDiv = document.getElementById('2faBackupCodes');
+        }
+        // SMS 2FA UI
+        if (!document.getElementById('sms2faForm')) {
+            smsForm = document.createElement('form');
+            smsForm.id = 'sms2faForm';
+            smsForm.style.margin = '18px 0 0 0';
+            smsForm.innerHTML = `
+                <div class="form-group">
+                    <label for="sms2faPhone">Phone Number (for SMS 2FA)</label>
+                    <input type="tel" id="sms2faPhone" placeholder="+255..." required>
+                </div>
+                <button type="submit" class="btn btn-outline">Send OTP</button>
+                <div id="sms2faStatus" style="margin-top:8px;"></div>
+                <div id="sms2faVerifyWrap" style="display:none;margin-top:10px;">
+                    <input type="text" id="sms2faOtp" maxlength="6" placeholder="Enter OTP" style="width:120px;">
+                    <button type="button" class="btn btn-primary" id="sms2faVerifyBtn">Verify & Enable SMS 2FA</button>
+                </div>
+            `;
+            msgDiv.parentNode.insertBefore(smsForm, msgDiv.nextSibling);
+        } else {
+            smsForm = document.getElementById('sms2faForm');
+        }
+        smsInput = smsForm.querySelector('#sms2faPhone');
+        smsVerifyBtn = smsForm.querySelector('#sms2faVerifyBtn');
+        smsStatusDiv = smsForm.querySelector('#sms2faStatus');
+        // State
         let enabled = false;
+        let secret = null;
+        let backupCodes = [];
+        // Open modal: fetch 2FA status
         if (openBtn && modal) {
-            openBtn.addEventListener('click', () => { modal.style.display = 'block'; });
+            openBtn.addEventListener('click', async () => {
+                modal.style.display = 'block';
+                statusDiv.innerHTML = '';
+                msgDiv.innerHTML = '';
+                qrImg.style.display = 'none';
+                backupCodesDiv.style.display = 'none';
+                smsForm.style.display = 'block';
+                smsForm.querySelector('#sms2faVerifyWrap').style.display = 'none';
+                // Fetch 2FA status from backend
+                try {
+                    const res = await api.get('/api/auth/profile');
+                    if (res.two_factor_enabled) {
+                        enabled = true;
+                        statusDiv.innerHTML = '<span style="color:#27ae60;font-weight:bold;">2FA Enabled</span>';
+                        enableBtn.style.display = 'none';
+                        disableBtn.style.display = 'inline-block';
+                        smsForm.style.display = 'none';
+                    } else {
+                        enabled = false;
+                        statusDiv.innerHTML = '<span style="color:#e74c3c;font-weight:bold;">2FA Disabled</span>';
+                        enableBtn.style.display = 'inline-block';
+                        disableBtn.style.display = 'none';
+                        smsForm.style.display = 'block';
+                    }
+                } catch (e) {
+                    statusDiv.innerHTML = '<span style="color:#e74c3c;">Failed to fetch 2FA status</span>';
+                }
+            });
         }
         if (closeBtn && modal) {
             closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
         }
+        // Enable 2FA: setup (get QR, secret, backup codes)
         if (enableBtn) {
-            enableBtn.addEventListener('click', () => {
-                verifyForm.style.display = 'block';
-                msgDiv.innerHTML = 'Enter the code sent to your email or authenticator app.';
+            enableBtn.addEventListener('click', async () => {
+                try {
+                    const res = await api.post('/api/auth/2fa/setup');
+                    secret = res.secret;
+                    qrImg.src = res.qr;
+                    qrImg.style.display = 'block';
+                    backupCodes = res.backupCodes;
+                    backupCodesDiv.innerHTML = '<b>Backup Codes:</b><br>' + backupCodes.map(c => `<code>${c}</code>`).join(' ');
+                    backupCodesDiv.innerHTML += `<br><button class="btn btn-sm" id="downloadBackupCodesBtn">Download Codes</button> <button class="btn btn-sm" id="regenBackupCodesBtn">Regenerate</button>`;
+                    backupCodesDiv.style.display = 'block';
+                    msgDiv.innerHTML = 'Scan the QR code with Google Authenticator or Authy, or enter the secret manually: <b>' + secret + '</b><br>Then enter the 6-digit code below to enable 2FA.';
+                    verifyForm.style.display = 'block';
+                    // Download backup codes
+                    setTimeout(() => {
+                        const downloadBtn = document.getElementById('downloadBackupCodesBtn');
+                        if (downloadBtn) {
+                            downloadBtn.onclick = () => {
+                                window.open('/api/auth/2fa/backup-codes/download', '_blank');
+                            };
+                        }
+                        const regenBtn = document.getElementById('regenBackupCodesBtn');
+                        if (regenBtn) {
+                            regenBtn.onclick = async () => {
+                                try {
+                                    const regen = await api.post('/api/auth/2fa/backup-codes');
+                                    backupCodes = regen.backupCodes;
+                                    backupCodesDiv.innerHTML = '<b>Backup Codes:</b><br>' + backupCodes.map(c => `<code>${c}</code>`).join(' ');
+                                    backupCodesDiv.innerHTML += `<br><button class=\"btn btn-sm\" id=\"downloadBackupCodesBtn\">Download Codes</button> <button class=\"btn btn-sm\" id=\"regenBackupCodesBtn\">Regenerate</button>`;
+                                    setTimeout(() => {
+                                        document.getElementById('downloadBackupCodesBtn').onclick = () => window.open('/api/auth/2fa/backup-codes/download', '_blank');
+                                        document.getElementById('regenBackupCodesBtn').onclick = regenBtn.onclick;
+                                    }, 100);
+                                } catch {
+                                    authHandler.showToast('Failed to regenerate codes', 'error');
+                                }
+                            };
+                        }
+                    }, 100);
+                } catch (e) {
+                    msgDiv.innerHTML = '<span style="color:#e74c3c;">Failed to setup 2FA</span>';
+                }
             });
         }
-        if (disableBtn) {
-            disableBtn.addEventListener('click', () => {
-                enabled = false;
-                statusDiv.innerHTML = '<span style="color:#e74c3c;font-weight:bold;">2FA Disabled</span>';
-                msgDiv.innerHTML = '2FA has been disabled.';
-                disableBtn.style.display = 'none';
-                enableBtn.style.display = 'inline-block';
-            });
-        }
+        // Verify and enable 2FA
         if (verifyForm) {
-            verifyForm.addEventListener('submit', (e) => {
+            verifyForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                // Simulate code check
-                if (codeInput.value === '123456') {
-                    enabled = true;
+                try {
+                    const code = codeInput.value.trim();
+                    const res = await api.post('/api/auth/2fa/enable', { code });
                     statusDiv.innerHTML = '<span style="color:#27ae60;font-weight:bold;">2FA Enabled</span>';
                     msgDiv.innerHTML = '2FA is now enabled!';
                     enableBtn.style.display = 'none';
                     disableBtn.style.display = 'inline-block';
                     verifyForm.style.display = 'none';
-                } else {
+                    smsForm.style.display = 'none';
+                } catch (err) {
                     msgDiv.innerHTML = '<span style="color:#e74c3c;">Invalid code. Try again.</span>';
+                }
+            });
+        }
+        // SMS 2FA: send OTP
+        smsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const phone = smsInput.value.trim();
+            if (!phone) return smsStatusDiv.innerHTML = '<span style="color:#e74c3c;">Enter phone number</span>';
+            try {
+                await api.post('/api/auth/2fa/sms/setup', { phone });
+                smsStatusDiv.innerHTML = '<span style="color:#27ae60;">OTP sent to your phone</span>';
+                smsForm.querySelector('#sms2faVerifyWrap').style.display = 'block';
+            } catch (err) {
+                smsStatusDiv.innerHTML = '<span style="color:#e74c3c;">Failed to send OTP</span>';
+            }
+        });
+        // SMS 2FA: verify OTP
+        smsVerifyBtn.addEventListener('click', async () => {
+            const otp = smsForm.querySelector('#sms2faOtp').value.trim();
+            if (!otp) return smsStatusDiv.innerHTML = '<span style="color:#e74c3c;">Enter OTP</span>';
+            try {
+                await api.post('/api/auth/2fa/sms/verify', { otp });
+                statusDiv.innerHTML = '<span style="color:#27ae60;font-weight:bold;">2FA Enabled (SMS)</span>';
+                smsStatusDiv.innerHTML = '<span style="color:#27ae60;">SMS 2FA enabled!</span>';
+                enableBtn.style.display = 'none';
+                disableBtn.style.display = 'inline-block';
+                smsForm.style.display = 'none';
+            } catch (err) {
+                smsStatusDiv.innerHTML = '<span style="color:#e74c3c;">Invalid OTP. Try again.</span>';
+            }
+        });
+        // Disable 2FA
+        if (disableBtn) {
+            disableBtn.addEventListener('click', async () => {
+                try {
+                    let code = prompt('Enter your current 2FA code or OTP to disable:');
+                    if (!code) return;
+                    // Try TOTP disable first, then SMS
+                    try {
+                        await api.post('/api/auth/2fa/disable', { code });
+                    } catch {
+                        await api.post('/api/auth/2fa/sms/disable', {});
+                    }
+                    statusDiv.innerHTML = '<span style="color:#e74c3c;font-weight:bold;">2FA Disabled</span>';
+                    msgDiv.innerHTML = '2FA has been disabled.';
+                    disableBtn.style.display = 'none';
+                    enableBtn.style.display = 'inline-block';
+                    smsForm.style.display = 'block';
+                } catch (err) {
+                    msgDiv.innerHTML = '<span style="color:#e74c3c;">Failed to disable 2FA. Check your code.</span>';
                 }
             });
         }
@@ -251,7 +408,7 @@ class Dashboard {
 
     handleGridClick(e) {
         const target = e.target;
-        const projectCard = target.closest('.project-card');
+        const projectCard = target.closest('.saved-project-card-adv');
         if (!projectCard) return;
         const projectId = projectCard.dataset.projectId;
         if (target.classList.contains('btn-remove')) {
@@ -262,25 +419,22 @@ class Dashboard {
     }
 
     // --- Profile Tab Logic ---
-    loadUserProfile() {
-        // Simulate fetch from backend
-        const user = {
-            avatar: '../pict/default-avatar.png',
-            name: 'Jane Doe',
-            email: 'jane.doe@email.com',
-            phone: '+255 700 000 000',
-            bio: 'Student passionate about AI and Cloud Computing.'
-        };
-        const avatarImg = document.getElementById('profileAvatarImg');
-        const nameInput = document.getElementById('profileName');
-        const emailInput = document.getElementById('profileEmail');
-        const phoneInput = document.getElementById('profilePhone');
-        const bioInput = document.getElementById('profileBio');
-        if (avatarImg) avatarImg.src = user.avatar;
-        if (nameInput) nameInput.value = user.name;
-        if (emailInput) emailInput.value = user.email;
-        if (phoneInput) phoneInput.value = user.phone;
-        if (bioInput) bioInput.value = user.bio;
+    async loadUserProfile() {
+        try {
+            const user = await api.getProfile();
+            const avatarImg = document.getElementById('profileAvatarImg');
+            const nameInput = document.getElementById('profileName');
+            const emailInput = document.getElementById('profileEmail');
+            const phoneInput = document.getElementById('profilePhone');
+            const bioInput = document.getElementById('profileBio');
+            if (avatarImg) avatarImg.src = user.avatar || '../pict/default-avatar.png';
+            if (nameInput) nameInput.value = user.username || '';
+            if (emailInput) emailInput.value = user.email || '';
+            if (phoneInput) phoneInput.value = user.phone_number || '';
+            if (bioInput) bioInput.value = user.bio || '';
+        } catch (e) {
+            authHandler.showToast('Failed to load profile', 'error');
+        }
     }
 
     initProfileTab() {
@@ -291,69 +445,101 @@ class Dashboard {
             changeAvatarBtn.addEventListener('click', function() {
                 avatarInput.click();
             });
-            avatarInput.addEventListener('change', function(e) {
+            avatarInput.addEventListener('change', async function(e) {
                 const file = e.target.files[0];
                 if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(evt) {
-                        avatarImg.src = evt.target.result;
-                    };
-                    reader.readAsDataURL(file);
+                    const formData = new FormData();
+                    formData.append('avatar', file);
+                    try {
+                        const res = await fetch('/api/auth/profile/avatar', {
+                            method: 'POST',
+                            headers: { 'Authorization': `Bearer ${api.token}` },
+                            body: formData
+                        });
+                        const data = await res.json();
+                        if (res.ok && data.avatar) {
+                            avatarImg.src = data.avatar;
+                            authHandler.showToast('Profile picture updated!', 'success');
+                        } else {
+                            throw new Error(data.message || 'Failed to upload avatar');
+                        }
+                    } catch (err) {
+                        authHandler.showToast('Failed to upload avatar', 'error');
+                    }
                 }
             });
         }
         const profileForm = document.getElementById('profileForm');
         if (profileForm) {
-            profileForm.addEventListener('submit', function(e) {
+            profileForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
-                // Simulate save to backend
-                authHandler.showToast('Profile updated successfully!', 'success');
+                const name = document.getElementById('profileName').value.trim();
+                const email = document.getElementById('profileEmail').value.trim();
+                const phone = document.getElementById('profilePhone').value.trim();
+                const bio = document.getElementById('profileBio').value.trim();
+                try {
+                    await api.updateProfile({ username: name, email, phone, bio });
+                    authHandler.showToast('Profile updated successfully!', 'success');
+                } catch (err) {
+                    authHandler.showToast('Failed to update profile', 'error');
+                }
             });
         }
     }
 
     // --- Orders Tab Logic ---
-    loadOrderHistory() {
-        // Simulate fetch from backend
-        const orders = [
-            { id: 'ORD-001', date: '2024-06-01', project: 'AI Chatbot', amount: 150, status: 'Paid', receipt: '#' },
-            { id: 'ORD-002', date: '2024-06-10', project: 'Cloud Storage App', amount: 200, status: 'Pending', receipt: '#' },
-            { id: 'ORD-003', date: '2024-06-15', project: 'Network Security Tool', amount: 180, status: 'Paid', receipt: '#' }
-        ];
+    async loadOrderHistory() {
         const container = document.getElementById('ordersList');
         if (!container) return;
         container.innerHTML = '';
-        if (orders.length === 0) {
-            container.innerHTML = '<p>No orders found.</p>';
-            return;
-        }
-        const table = document.createElement('table');
-        table.className = 'orders-table';
-        table.innerHTML = `
-            <thead>
-                <tr>
-                    <th>Order ID</th>
-                    <th>Date</th>
-                    <th>Project</th>
-                    <th>Amount</th>
-                    <th>Status</th>
-                    <th>Receipt</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${orders.map(order => `
+        try {
+            const orders = await api.getMyOrders();
+            if (!orders || orders.length === 0) {
+                container.innerHTML = '<p>No orders found.</p>';
+                return;
+            }
+            // Responsive advanced table
+            const table = document.createElement('table');
+            table.className = 'orders-table';
+            table.innerHTML = `
+                <thead>
                     <tr>
-                        <td>${order.id}</td>
-                        <td>${order.date}</td>
-                        <td>${order.project}</td>
-                        <td>$${order.amount}</td>
-                        <td><span class="${order.status === 'Paid' ? 'paid' : 'pending'}">${order.status}</span></td>
-                        <td>${order.status === 'Paid' ? `<a href="${order.receipt}" class="btn btn-sm" download>Download</a>` : '-'}</td>
+                        <th>Order #</th>
+                        <th>Date</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Receipt</th>
                     </tr>
-                `).join('')}
-            </tbody>
-        `;
-        container.appendChild(table);
+                </thead>
+                <tbody>
+                    ${orders.map(order => `
+                        <tr>
+                            <td>${order.order_number}</td>
+                            <td>${new Date(order.created_at).toLocaleDateString()}</td>
+                            <td>
+                                <ul style="padding-left:16px;">
+                                    ${order.items.map(item => `<li>${item.project_name} (x${item.quantity}) - $${item.price}</li>`).join('')}
+                                </ul>
+                            </td>
+                            <td>$${order.total_amount}</td>
+                            <td><span class="${order.status === 'completed' ? 'paid' : 'pending'}">${order.status}</span></td>
+                            <td>${order.status === 'completed' ? `<button class="btn btn-sm btn-download-receipt" data-order-id="${order.id}">Download Receipt</button>` : '-'}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+            container.appendChild(table);
+            // Download receipt event
+            container.querySelectorAll('.btn-download-receipt').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const orderId = this.getAttribute('data-order-id');
+                    window.open(`/api/orders/${orderId}/download-receipt`, '_blank');
+                });
+            });
+        } catch (e) {
+            container.innerHTML = '<p>Failed to load orders.</p>';
+        }
     }
 
     // --- Settings Tab Logic ---

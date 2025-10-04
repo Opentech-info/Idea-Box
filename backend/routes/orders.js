@@ -2,8 +2,75 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const { executeQuery } = require('../config/db');
 const { authenticateToken, logActivity } = require('../middleware/auth');
-
+const PDFDocument = require('pdfkit');
+const stream = require('stream');
 const router = express.Router();
+
+// Download completed order as PDF (advanced)
+router.get('/:orderId/download-receipt', authenticateToken, async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const userId = req.user.id;
+        // Get order and items
+        const orders = await executeQuery(`
+            SELECT o.*, 
+                   GROUP_CONCAT(
+                       CONCAT_WS('::', oi.id, oi.project_id, oi.project_name, oi.price, oi.quantity)
+                   ) as items
+            FROM orders o
+            LEFT JOIN order_items oi ON o.id = oi.order_id
+            WHERE o.id = ? AND o.user_id = ?
+            GROUP BY o.id
+        `, [orderId, userId]);
+        if (orders.length === 0) return res.status(404).json({ message: 'Order not found' });
+        const order = orders[0];
+        order.items = order.items ? order.items.split(',').map(str => {
+            const [id, project_id, project_name, price, quantity] = str.split('::');
+            return { id, project_id, project_name, price: parseFloat(price), quantity: parseInt(quantity) };
+        }) : [];
+        // Get payment info
+        const payments = await executeQuery('SELECT * FROM payments WHERE order_id = ?', [orderId]);
+        // Generate PDF
+        const doc = new PDFDocument({ margin: 40 });
+        let buffers = [];
+        doc.on('data', buffers.push.bind(buffers));
+        doc.on('end', () => {
+            const pdfData = Buffer.concat(buffers);
+            res.setHeader('Content-Disposition', `attachment; filename=order-${order.order_number || orderId}.pdf`);
+            res.setHeader('Content-Type', 'application/pdf');
+            res.end(pdfData);
+        });
+        // Header
+        doc.fontSize(20).text('Order Receipt', { align: 'center' });
+        doc.moveDown();
+        doc.fontSize(12).text(`Order Number: ${order.order_number}`);
+        doc.text(`Date: ${order.created_at}`);
+        doc.text(`Customer: ${order.customer_name}`);
+        doc.text(`Email: ${order.customer_email}`);
+        doc.text(`Phone: ${order.customer_phone || ''}`);
+        doc.text(`Address: ${order.customer_address || ''}`);
+        doc.moveDown();
+        doc.fontSize(14).text('Order Items:', { underline: true });
+        doc.moveDown(0.5);
+        order.items.forEach((item, idx) => {
+            doc.fontSize(12).text(`${idx + 1}. ${item.project_name} (x${item.quantity}) - $${item.price}`);
+        });
+        doc.moveDown();
+        doc.fontSize(12).text(`Total Amount: $${order.total_amount}`);
+        doc.moveDown();
+        if (payments.length > 0) {
+            doc.fontSize(14).text('Payments:', { underline: true });
+            payments.forEach((p, i) => {
+                doc.fontSize(12).text(`${i + 1}. Method: ${p.payment_method}, Amount: $${p.amount}, Status: ${p.status}, Txn: ${p.transaction_id}`);
+            });
+        }
+        doc.end();
+    } catch (error) {
+        console.error('Download order PDF error:', error);
+        res.status(500).json({ message: 'Failed to generate order PDF' });
+    }
+});
+
 
 // Generate unique order number
 const generateOrderNumber = () => {
@@ -87,14 +154,8 @@ router.get('/my', authenticateToken, async (req, res) => {
         
         const orders = await executeQuery(`
             SELECT o.*, 
-                   JSON_ARRAYAGG(
-                       JSON_OBJECT(
-                           'id', oi.id,
-                           'project_id', oi.project_id,
-                           'project_name', oi.project_name,
-                           'price', oi.price,
-                           'quantity', oi.quantity
-                       )
+                   GROUP_CONCAT(
+                       CONCAT_WS('::', oi.id, oi.project_id, oi.project_name, oi.price, oi.quantity)
                    ) as items
             FROM orders o
             LEFT JOIN order_items oi ON o.id = oi.order_id
@@ -103,13 +164,12 @@ router.get('/my', authenticateToken, async (req, res) => {
             ORDER BY o.created_at DESC
         `, [userId]);
 
-        // Parse JSON items
+        // Parse items
         orders.forEach(order => {
-            try {
-                order.items = JSON.parse(order.items);
-            } catch (e) {
-                order.items = [];
-            }
+            order.items = order.items ? order.items.split(',').map(str => {
+                const [id, project_id, project_name, price, quantity] = str.split('::');
+                return { id, project_id, project_name, price: parseFloat(price), quantity: parseInt(quantity) };
+            }) : [];
         });
 
         res.json(orders);
@@ -127,14 +187,8 @@ router.get('/:id', authenticateToken, async (req, res) => {
 
         const orders = await executeQuery(`
             SELECT o.*, 
-                   JSON_ARRAYAGG(
-                       JSON_OBJECT(
-                           'id', oi.id,
-                           'project_id', oi.project_id,
-                           'project_name', oi.project_name,
-                           'price', oi.price,
-                           'quantity', oi.quantity
-                       )
+                   GROUP_CONCAT(
+                       CONCAT_WS('::', oi.id, oi.project_id, oi.project_name, oi.price, oi.quantity)
                    ) as items
             FROM orders o
             LEFT JOIN order_items oi ON o.id = oi.order_id
@@ -147,11 +201,10 @@ router.get('/:id', authenticateToken, async (req, res) => {
         }
 
         const order = orders[0];
-        try {
-            order.items = JSON.parse(order.items);
-        } catch (e) {
-            order.items = [];
-        }
+        order.items = order.items ? order.items.split(',').map(str => {
+            const [id, project_id, project_name, price, quantity] = str.split('::');
+            return { id, project_id, project_name, price: parseFloat(price), quantity: parseInt(quantity) };
+        }) : [];
 
         // Get payment information
         const payments = await executeQuery(

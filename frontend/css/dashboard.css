@@ -1,24 +1,28 @@
 /* ===== ADVANCED SAVED PROJECTS GRID ===== */
+/* Compact, advanced saved projects grid */
 .saved-projects-grid-adv {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-    gap: 24px;
-    margin-top: 24px;
-}
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 18px;
+    margin-top: 18px;
+/* removed stray closing brace */
 .saved-project-card-adv {
     background: var(--background-dark);
-    border-radius: 14px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
     overflow: hidden;
     display: flex;
     flex-direction: column;
     transition: transform 0.2s, box-shadow 0.2s;
     min-width: 0;
-}
+    max-width: 290px;
+    margin: 0 auto;
+    min-height: 180px;
+/* removed stray closing brace */
 .saved-project-card-adv:hover {
     transform: translateY(-4px) scale(1.02);
     box-shadow: 0 8px 24px rgba(229,9,20,0.13);
-}
+/* removed stray closing brace */
 .saved-project-image-wrap {
     width: 100%;
     aspect-ratio: 16/9;
@@ -32,11 +36,11 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-top-left-radius: 14px;
-    border-top-right-radius: 14px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
 }
 .saved-project-info-adv {
-    padding: 18px 16px 14px 16px;
+    padding: 12px 10px 10px 10px;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -100,10 +104,15 @@
 @media (max-width: 600px) {
     .saved-projects-grid-adv {
         grid-template-columns: 1fr;
-        gap: 16px;
+        gap: 10px;
+    }
+    .saved-project-card-adv {
+        max-width: 98vw;
+        min-height: 120px;
+        border-radius: 8px;
     }
     .saved-project-info-adv {
-        padding: 14px 10px 10px 10px;
+        padding: 8px 6px 8px 6px;
     }
 }
 
@@ -135,111 +144,74 @@
 }
 /* ===== DASHBOARD PAGE SPECIFIC STYLES ===== */
 
-/* ===== DASHBOARD LAYOUT ===== */
-.dashboard-section {
-    min-height: 100vh;
-    padding-top: 120px;
-    padding-bottom: 60px;
+/* --- Advanced Orders Table (fixed, deduped) --- */
+.orders-table th, .orders-table td {
+    padding: 14px 10px;
+    text-align: left;
+    border-bottom: 1.5px solid var(--border-color);
 }
-
-.dashboard-content {
-    display: grid;
-    grid-template-columns: 1fr 3fr;
-    gap: 40px;
+.orders-table th {
+    background: linear-gradient(90deg, var(--background-dark) 60%, var(--background-card) 100%);
+    color: var(--primary-color);
+    font-weight: 700;
+    border-bottom: 2.5px solid var(--primary-color);
+    font-size: 1.08rem;
+    letter-spacing: 0.5px;
 }
-
-.dashboard-sidebar {
-    background: var(--background-card);
-    padding: 20px;
-    border-radius: 10px;
+.orders-table td {
+    color: var(--text-primary);
+    background: rgba(24,24,24,0.97);
+    font-size: 1.01rem;
+    vertical-align: middle;
 }
-
-.dashboard-sidebar ul {
-    list-style: none;
+.orders-table tr:last-child td {
+    border-bottom: none;
 }
-
-.dashboard-nav-link {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 15px;
-    color: var(--text-secondary);
-    text-decoration: none;
-    border-radius: 5px;
-    transition: all 0.3s ease;
+.orders-table .paid {
+    color: var(--success-color);
+    font-weight: bold;
+    letter-spacing: 0.5px;
 }
-
-.dashboard-nav-link:hover,
-.dashboard-nav-link.active {
+.orders-table .pending {
+    color: var(--warning-color);
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+.orders-table .btn-sm {
+    padding: 6px 14px;
+    font-size: 0.93rem;
+    border-radius: 6px;
     background: var(--primary-color);
     color: var(--text-primary);
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(229,9,20,0.08);
 }
-.dashboard-sidebar ul li {
-    list-style: none;
-    margin-bottom: 15px;
+.orders-table .btn-sm:hover {
+    background: #f40612;
+    box-shadow: 0 4px 16px rgba(229,9,20,0.13);
 }
-
-.dashboard-nav-link i {
-    font-size: 1.1rem;
-    width: 20px;
+@media (max-width: 900px) {
+    .orders-table th, .orders-table td {
+        padding: 10px 4px;
+        font-size: 0.97rem;
+    }
+    .orders-table {
+        font-size: 0.97rem;
+        border-radius: 10px;
+    }
 }
-
-/* ===== DASHBOARD TABS ===== */
-.dashboard-tab {
-    background: var(--background-card);
-    padding: 30px;
-    border-radius: 10px;
-    min-height: 400px;
+@media (max-width: 600px) {
+    .orders-table th, .orders-table td {
+        padding: 7px 2px;
+        font-size: 0.91rem;
+    }
+    .orders-table {
+        font-size: 0.91rem;
+        border-radius: 6px;
+    }
 }
-
-.dashboard-tab h3 {
-    margin-bottom: 20px;
-    color: var(--text-primary);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 1.4rem;
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 10px;
-}
-
-.dashboard-tab h3 i {
-    color: var(--primary-color);
-}
-
-/* ===== SAVED PROJECTS ===== */
-.saved-projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
-}
-
-.saved-project-card {
-    background: var(--background-dark);
-    border-radius: 8px;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.saved-project-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(229, 9, 20, 0.15);
-}
-
-.saved-project-image {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-}
-
-.saved-project-info {
-    padding: 15px;
-}
-
-.saved-project-title {
-    font-size: 1.1rem;
-    color: var(--text-primary);
     margin-bottom: 8px;
 }
 
@@ -262,6 +234,9 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    line-clamp: 2; /* Added for compatibility */
+}
+
 }
 
 .saved-project-actions {
@@ -369,12 +344,84 @@
 }
 .orders-table {
     width: 100%;
-    border-collapse: collapse;
-    background: var(--background-dark);
-    border-radius: 8px;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--background-card);
+    border-radius: 18px;
     overflow: hidden;
+    font-size: 1.04rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    margin-bottom: 24px;
+    margin-top: 10px;
+    transition: box-shadow 0.2s;
+}
+.orders-table th, .orders-table td {
+    padding: 18px 14px;
+    text-align: left;
+    border-bottom: 1.5px solid var(--border-color);
+}
+.orders-table th {
+    background: linear-gradient(90deg, var(--background-dark) 60%, var(--background-card) 100%);
+    color: var(--primary-color);
+    font-weight: 700;
+    border-bottom: 2.5px solid var(--primary-color);
+    font-size: 1.08rem;
+    letter-spacing: 0.5px;
+}
+.orders-table td {
+    color: var(--text-primary);
+    background: rgba(24,24,24,0.97);
+    font-size: 1.01rem;
+    vertical-align: middle;
+}
+.orders-table tr:last-child td {
+    border-bottom: none;
+}
+.orders-table .paid {
+    color: var(--success-color);
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+.orders-table .pending {
+    color: var(--warning-color);
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+.orders-table .btn-sm {
+    padding: 7px 16px;
     font-size: 0.98rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border-radius: 7px;
+    background: var(--primary-color);
+    color: var(--text-primary);
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(229,9,20,0.08);
+}
+.orders-table .btn-sm:hover {
+    background: #f40612;
+    box-shadow: 0 4px 16px rgba(229,9,20,0.13);
+}
+@media (max-width: 900px) {
+    .orders-table th, .orders-table td {
+        padding: 12px 6px;
+        font-size: 0.97rem;
+    }
+    .orders-table {
+        font-size: 0.97rem;
+        border-radius: 10px;
+    }
+}
+@media (max-width: 600px) {
+    .orders-table th, .orders-table td {
+        padding: 8px 4px;
+        font-size: 0.93rem;
+    }
+    .orders-table {
+        font-size: 0.93rem;
+        border-radius: 6px;
+    }
+}
 }
 .orders-table th, .orders-table td {
     padding: 12px 10px;
